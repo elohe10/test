@@ -132,7 +132,7 @@ export default function Reservation() {
           /* ── Reservation form ──────────────────────────────── */
           <form
             onSubmit={handleSubmit}
-            className="bg-dark-card rounded-3xl border border-white/10 p-6 sm:p-10 max-w-3xl mx-auto reveal"
+            className="bg-dark-card rounded-3xl border border-white/10 p-6 sm:p-10 max-w-3xl mx-auto"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
 
