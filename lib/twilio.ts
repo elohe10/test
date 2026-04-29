@@ -20,8 +20,8 @@ export async function sendReservationAlert(data: {
   special_requests?: string;
 }) {
   const client = twilio(
-    process.env.TWILIO_ACCOUNT_SID,
-    process.env.TWILIO_AUTH_TOKEN
+    process.env.TWILIO_ACCOUNT_SID!,
+    process.env.TWILIO_AUTH_TOKEN!
   );
 
   const message = `
@@ -36,8 +36,8 @@ export async function sendReservationAlert(data: {
   `.trim();
 
   await client.messages.create({
-    from: process.env.TWILIO_WHATSAPP_FROM,
-    to: process.env.OWNER_WHATSAPP_NUMBER,
+    from: process.env.TWILIO_WHATSAPP_FROM!,
+    to: process.env.OWNER_WHATSAPP_NUMBER!,
     body: message,
   });
 }
