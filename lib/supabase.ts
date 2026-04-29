@@ -6,10 +6,12 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Fallback values prevent the build from crashing when env vars are not set.
+// At runtime, the real values from .env.local (or Vercel env vars) are used.
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL ?? "https://placeholder.supabase.co",
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "placeholder-key"
+);
 
 // ─────────────────────────────────────────────────────────────
 // TypeScript type for a reservation row
