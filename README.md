@@ -133,7 +133,7 @@ Find these in: Supabase Dashboard → Project Settings → API
 ### 4. Add to `.env.local`
 
 ```env
-TWILIO_ACCOUNT_SID=AC847297b2bc328dd9386a77123bc76971
+TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxx
 TWILIO_AUTH_TOKEN=your-auth-token
 TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
 OWNER_WHATSAPP_NUMBER=whatsapp:+250792560660
