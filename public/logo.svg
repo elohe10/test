@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <!-- Kawa House text logo — replace this with your real logo image -->
+  <!-- Circle icon -->
+  <circle cx="24" cy="30" r="22" fill="#D4A853"/>
+  <text x="24" y="36" font-family="Georgia, serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#1A1008">K</text>
+  <!-- Shop name -->
+  <text x="56" y="25" font-family="Georgia, serif" font-size="18" font-weight="600" fill="#1A1008">Kawa House</text>
+  <text x="57" y="42" font-family="Arial, sans-serif" font-size="9" letter-spacing="3" fill="#A0522D">SPECIALTY COFFEE</text>
+</svg>

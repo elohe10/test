@@ -1,0 +1,134 @@
+{
+  "coffee": [
+    {
+      "id": "c1",
+      "name": "Kawa Espresso",
+      "price": 2500,
+      "description": "Bold single-origin Rwandan espresso, rich and smooth with a caramel finish.",
+      "image": "https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "c2",
+      "name": "Flat White",
+      "price": 3500,
+      "description": "Velvety microfoam milk poured over a double ristretto shot.",
+      "image": "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "c3",
+      "name": "Cappuccino",
+      "price": 3200,
+      "description": "Equal parts espresso, steamed milk, and thick milk foam. A classic done right.",
+      "image": "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "c4",
+      "name": "Café Latte",
+      "price": 3500,
+      "description": "Smooth espresso with steamed milk and a light layer of foam.",
+      "image": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "c5",
+      "name": "Cold Brew",
+      "price": 4000,
+      "description": "Steeped for 18 hours, smooth and refreshing with zero bitterness.",
+      "image": "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "c6",
+      "name": "Rwandan Pour Over",
+      "price": 4500,
+      "description": "Single-origin beans from Huye Mountain, brewed slowly for full clarity.",
+      "image": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop"
+    }
+  ],
+  "specialty": [
+    {
+      "id": "s1",
+      "name": "Kawa Signature Latte",
+      "price": 4500,
+      "description": "House blend with cinnamon, cardamom, and a touch of honey. Our most loved drink.",
+      "image": "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "s2",
+      "name": "Matcha Latte",
+      "price": 4000,
+      "description": "Ceremonial-grade matcha whisked with oat milk. Earthy, creamy, and calming.",
+      "image": "https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "s3",
+      "name": "Hibiscus Iced Tea",
+      "price": 3000,
+      "description": "Refreshing Rwandan hibiscus brewed and served over ice with a hint of ginger.",
+      "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "s4",
+      "name": "Mango Smoothie",
+      "price": 4000,
+      "description": "Fresh local mangoes blended with yogurt and a splash of passion fruit.",
+      "image": "https://images.unsplash.com/photo-1546173159-315724a31696?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "s5",
+      "name": "Spiced Hot Chocolate",
+      "price": 3500,
+      "description": "Dark Rwandan cocoa with cinnamon, nutmeg, and steamed whole milk.",
+      "image": "https://images.unsplash.com/photo-1517578239113-b03992dcdd25?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "s6",
+      "name": "Turmeric Golden Latte",
+      "price": 3800,
+      "description": "Turmeric, black pepper, ginger, and oat milk. Anti-inflammatory and delicious.",
+      "image": "https://images.unsplash.com/photo-1571091655789-405eb7a3a3a8?w=400&h=300&fit=crop"
+    }
+  ],
+  "snacks": [
+    {
+      "id": "sn1",
+      "name": "Mandazi",
+      "price": 1500,
+      "description": "Light, fluffy East African doughnuts with a hint of coconut. Served warm.",
+      "image": "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "sn2",
+      "name": "Avocado Toast",
+      "price": 4500,
+      "description": "Sourdough with smashed avocado, chili flakes, and a poached egg.",
+      "image": "https://images.unsplash.com/photo-1541519227354-08fa5d50c820?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "sn3",
+      "name": "Banana Bread Slice",
+      "price": 2500,
+      "description": "Moist, homemade banana bread with walnuts. Pairs perfectly with coffee.",
+      "image": "https://images.unsplash.com/photo-1528975604071-b4dc52a2d18c?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "sn4",
+      "name": "Cheese & Veggie Sandwich",
+      "price": 5000,
+      "description": "Fresh vegetables, local cheese, and house-made pesto on toasted ciabatta.",
+      "image": "https://images.unsplash.com/photo-1553909489-cd47e0907980?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "sn5",
+      "name": "Chocolate Brownie",
+      "price": 2000,
+      "description": "Rich, fudgy brownie made with Rwandan dark chocolate. A daily indulgence.",
+      "image": "https://images.unsplash.com/photo-1564355808539-22fda35bed7e?w=400&h=300&fit=crop"
+    },
+    {
+      "id": "sn6",
+      "name": "Granola Bowl",
+      "price": 4000,
+      "description": "House granola, Greek yogurt, seasonal fruits, and a drizzle of local honey.",
+      "image": "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?w=400&h=300&fit=crop"
+    }
+  ]
+}
