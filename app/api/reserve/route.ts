@@ -144,6 +144,7 @@ export async function POST(req: NextRequest) {
           full_name, phone, date, time,
           guests: guestCount,
           tables_reserved: tablesNeeded,
+          tablesStillFree: available - tablesNeeded,
           special_requests,
         });
       } catch (e) {
@@ -261,6 +262,7 @@ export async function PUT(req: NextRequest) {
           full_name, phone, date, time,
           guests: guestCount,
           tables_reserved: tablesNeeded,
+          tablesStillFree: available - tablesNeeded,
           special_requests,
           isUpdate: true,
         });

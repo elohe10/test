@@ -1,18 +1,58 @@
-// ─────────────────────────────────────────────────────────────
-// Twilio WhatsApp helpers
-//   sendReservationAlert   → notifies the shop owner
-//   sendCustomerConfirmation → auto-reply to the customer
-//
-// Required env vars (add to .env.local):
-//   TWILIO_ACCOUNT_SID
-//   TWILIO_AUTH_TOKEN
-//   TWILIO_WHATSAPP_FROM   e.g. whatsapp:+14155238886
-//   OWNER_WHATSAPP_NUMBER  e.g. whatsapp:+250792560660
-// ─────────────────────────────────────────────────────────────
-
 import twilio from "twilio";
 
+const DIVIDER = "━━━━━━━━━━━━━━━";
+const MAPS_LINK = "https://maps.google.com/?q=Kawa+House,Huye,Rwanda";
+
+// ── Formatting helpers ────────────────────────────────────────
+
+function formatDate(dateStr: string): string {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const d = new Date(year, month - 1, day);
+  const dayName = d.toLocaleDateString("en-GB", { weekday: "long" });
+  const monthName = d.toLocaleDateString("en-GB", { month: "long" });
+  return `${dayName}, ${day} ${monthName} ${year}`;
+}
+
+function formatTime(timeStr: string): string {
+  const [h, m] = timeStr.split(":").map(Number);
+  const period = h >= 12 ? "PM" : "AM";
+  const hour = h % 12 || 12;
+  return `${hour}:${String(m).padStart(2, "0")} ${period}`;
+}
+
+function relativeDay(dateStr: string): string {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const res = new Date(year, month - 1, day);
+  res.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const diff = Math.round((res.getTime() - today.getTime()) / 86_400_000);
+  if (diff === 0) return "Today";
+  if (diff === 1) return "Tomorrow";
+  const name = res.toLocaleDateString("en-GB", { weekday: "long" });
+  return diff <= 6 ? `This ${name}` : name;
+}
+
+function firstName(fullName: string): string {
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length >= 2 && parts[1].length > 1) return `${parts[0]} ${parts[1]}`;
+  return parts[0];
+}
+
+// Converts any common Rwandan phone format to E.164 (+250XXXXXXXXX)
+function normalizePhone(phone: string): string {
+  const cleaned = phone.replace(/\s+/g, "").replace(/[^\d+]/g, "");
+  if (cleaned.startsWith("+")) return cleaned;
+  if (cleaned.startsWith("0")) return "+250" + cleaned.slice(1);
+  return "+" + cleaned;
+}
+
+function waLink(phone: string): string {
+  return "https://wa.me/" + normalizePhone(phone).replace("+", "");
+}
+
 // ── Owner notification ────────────────────────────────────────
+
 export async function sendReservationAlert(data: {
   full_name: string;
   phone: string;
@@ -20,6 +60,7 @@ export async function sendReservationAlert(data: {
   time: string;
   guests: number;
   tables_reserved: number;
+  tablesStillFree: number;
   special_requests?: string;
   isUpdate?: boolean;
 }) {
@@ -28,21 +69,28 @@ export async function sendReservationAlert(data: {
     process.env.TWILIO_AUTH_TOKEN!
   );
 
-  const header = data.isUpdate
-    ? "✏️ *Updated Reservation — Kawa House*"
-    : "🍵 *New Reservation — Kawa House*";
+  const header = data.isUpdate ? "✏️ *Updated Reservation*" : "☕ *New Table Reservation*";
+  const notes = data.special_requests?.trim()
+    ? `"${data.special_requests.trim()}"`
+    : "No special notes";
 
-  const message = `
-${header}
-
-👤 Name: ${data.full_name}
-📞 Phone: ${data.phone}
-📅 Date: ${data.date}
-⏰ Time: ${data.time}
-👥 Guests: ${data.guests}
-🪑 Tables Reserved: ${data.tables_reserved} of 10
-📝 Notes: ${data.special_requests || "None"}
-  `.trim();
+  const message = [
+    header,
+    DIVIDER,
+    "🏪 *Kawa House — Huye*",
+    "",
+    `👤 *${data.full_name}*`,
+    `📞 ${waLink(data.phone)}`,
+    DIVIDER,
+    `📅 ${formatDate(data.date)}`,
+    `⏰ ${formatTime(data.time)} — *${relativeDay(data.date)}*`,
+    `👥 ${data.guests} guest${data.guests === 1 ? "" : "s"} → 🪑 ${data.tables_reserved} table${data.tables_reserved === 1 ? "" : "s"} needed`,
+    DIVIDER,
+    "📝 *Guest Note:*",
+    notes,
+    DIVIDER,
+    `📊 Availability: ${data.tablesStillFree} table${data.tablesStillFree === 1 ? "" : "s"} still free`,
+  ].join("\n");
 
   await client.messages.create({
     from: process.env.TWILIO_WHATSAPP_FROM!,
@@ -52,6 +100,7 @@ ${header}
 }
 
 // ── Customer auto-reply ───────────────────────────────────────
+
 export async function sendCustomerConfirmation(data: {
   full_name: string;
   phone: string;
@@ -65,26 +114,42 @@ export async function sendCustomerConfirmation(data: {
     process.env.TWILIO_AUTH_TOKEN!
   );
 
-  // Normalise customer phone to whatsapp:+XXXXXXXXXXX format
-  const digits = data.phone.replace(/\s+/g, "").replace(/[^\d+]/g, "");
-  const normalised = digits.startsWith("+") ? digits : `+${digits}`;
-  const to = `whatsapp:${normalised}`;
-
+  const to = `whatsapp:${normalizePhone(data.phone)}`;
   const ownerNumber = (
     process.env.OWNER_WHATSAPP_NUMBER ?? "whatsapp:+250792560660"
   ).replace("whatsapp:", "");
 
-  const message = `
-✅ *Reservation Confirmed — Kawa House*
+  const name = firstName(data.full_name);
+  const dayName = new Date(
+    ...data.date.split("-").map(Number) as [number, number, number]
+  ).toLocaleDateString("en-GB", { weekday: "long" });
 
-Hi ${data.full_name}, your table is booked!
-📅 ${data.date} at ⏰ ${data.time}
-👥 ${data.guests} guest${data.guests === 1 ? "" : "s"} — 🪑 ${data.tables_reserved} table${data.tables_reserved === 1 ? "" : "s"} reserved
-📍 Find us in Huye, Southern Province, Rwanda
-
-Need to change anything? Message us here or call ${ownerNumber}.
-See you soon ☕
-  `.trim();
+  const message = [
+    `✅ *You're all set, ${name}!*`,
+    "",
+    "Your reservation at *Kawa House*",
+    "is confirmed 🎉",
+    "",
+    DIVIDER,
+    `📅 ${formatDate(data.date)}`,
+    `⏰ ${formatTime(data.time)}`,
+    `👥 ${data.guests} guest${data.guests === 1 ? "" : "s"} — 🪑 ${data.tables_reserved} table${data.tables_reserved === 1 ? "" : "s"} reserved`,
+    DIVIDER,
+    "",
+    "📍 *Find us here:*",
+    MAPS_LINK,
+    "",
+    "🕗 We open at 7:00 AM daily",
+    "",
+    "💬 Need to change anything?",
+    "Reply here or call us:",
+    `📞 ${ownerNumber}`,
+    "",
+    "Scan our QR menu when you arrive",
+    "to order straight from your table 🍵",
+    "",
+    `*See you ${dayName} — Kawa House* ☕`,
+  ].join("\n");
 
   await client.messages.create({
     from: process.env.TWILIO_WHATSAPP_FROM!,

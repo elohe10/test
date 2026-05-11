@@ -9,6 +9,12 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    turbo: {
+      // Tell Turbopack this folder is the project root (fixes warning about multiple lockfiles)
+      root: __dirname,
+    },
+  },
 };
 
 module.exports = nextConfig;

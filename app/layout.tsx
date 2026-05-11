@@ -34,29 +34,20 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        {/* ─────────────────────────────────────────────────────
-            GOOGLE ANALYTICS 4
-            To activate GA4:
-            1. Go to https://analytics.google.com
-            2. Create a property → get your Measurement ID (e.g. G-XXXXXXXXXX)
-            3. Replace G-XXXXXXXXXX below with your real ID
-            4. Uncomment the two script tags below
-        ───────────────────────────────────────────────────── */}
-
-        {/* <script
+<script
           async
-          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
-        /> */}
-        {/* <script
+          src="https://www.googletagmanager.com/gtag/js?id=G-VYG9B4GWWZ"
+        />
+        <script
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'G-XXXXXXXXXX');
+              gtag('config', 'G-VYG9B4GWWZ');
             `,
           }}
-        /> */}
+        />
       </head>
       <body>{children}</body>
     </html>
