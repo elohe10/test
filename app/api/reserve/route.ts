@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Save to Supabase ──────────────────────────────────────
-    const { data: saved, error: dbError } = await supabase
+    const { error: dbError } = await supabase
       .from("reservations")
       .insert([
         {
@@ -125,9 +125,7 @@ export async function POST(req: NextRequest) {
           status: "confirmed",
           tables_reserved: tablesNeeded,
         },
-      ])
-      .select()
-      .single();
+      ]);
 
     if (dbError) {
       console.error("Supabase insert error:", dbError);
@@ -163,7 +161,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(
-      { message: "Reservation confirmed! See you at Kawa House.", id: saved.id },
+      { message: "Reservation confirmed! See you at Kawa House." },
       { status: 200 }
     );
   } catch (err) {
