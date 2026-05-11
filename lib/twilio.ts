@@ -120,35 +120,23 @@ export async function sendCustomerConfirmation(data: {
   ).replace("whatsapp:", "");
 
   const name = firstName(data.full_name);
-  const dayName = new Date(
-    ...data.date.split("-").map(Number) as [number, number, number]
-  ).toLocaleDateString("en-GB", { weekday: "long" });
+
+  const [year, month, day] = data.date.split("-").map(Number);
+  const d = new Date(year, month - 1, day);
+  const dayName = d.toLocaleDateString("en-GB", { weekday: "long" });
+  const monthName = d.toLocaleDateString("en-GB", { month: "long" });
+  const v = day % 100;
+  const suffix = (["th","st","nd","rd"])[(v - 20) % 10] ?? (["th","st","nd","rd"])[v] ?? "th";
+  const formattedDate = `${dayName}, ${monthName} ${day}${suffix}`;
+
+  const tables = data.tables_reserved;
+  const guests = data.guests;
 
   const message = [
-    `✅ *You're all set, ${name}!*`,
-    "",
-    "Your reservation at *Kawa House*",
-    "is confirmed 🎉",
-    "",
-    DIVIDER,
-    `📅 ${formatDate(data.date)}`,
-    `⏰ ${formatTime(data.time)}`,
-    `👥 ${data.guests} guest${data.guests === 1 ? "" : "s"} — 🪑 ${data.tables_reserved} table${data.tables_reserved === 1 ? "" : "s"} reserved`,
-    DIVIDER,
-    "",
-    "📍 *Find us here:*",
-    MAPS_LINK,
-    "",
-    "🕗 We open at 7:00 AM daily",
-    "",
-    "💬 Need to change anything?",
-    "Reply here or call us:",
-    `📞 ${ownerNumber}`,
-    "",
-    "Scan our QR menu when you arrive",
-    "to order straight from your table 🍵",
-    "",
-    `*See you ${dayName} — Kawa House* ☕`,
+    `Hey ${name}! 👋 Your table at Kawa House is confirmed for ${formattedDate} at ${formatTime(data.time)}: ${guests} guest${guests === 1 ? "" : "s"} you will be on ${tables} table${tables === 1 ? "" : "s"}. We open at 7 AM so feel free to come early.`,
+    `When you arrive, just scan the QR menu at your table to order. If anything changes, reply here or call us on ${ownerNumber}.`,
+    `See you soon ☕`,
+    `Kawa House`,
   ].join("\n");
 
   await client.messages.create({
