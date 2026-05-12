@@ -147,6 +147,13 @@ export default function Reservation() {
         return;
       }
 
+      if (!isEditing && typeof window !== "undefined" && (window as any).gtag) {
+        (window as any).gtag("event", "reservation_made", {
+          event_category: "reservation",
+          guests: guestCount,
+          date: form.date,
+        });
+      }
       setSuccessMessage(isEditing ? "Reservation updated!" : "You're booked!");
       setStatus("success");
       setForm(initialForm);

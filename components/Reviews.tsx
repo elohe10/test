@@ -1,61 +1,48 @@
 "use client";
 
-// ─────────────────────────────────────────────────────────────
-// Google Reviews section — horizontal auto-scrolling carousel
-//
-// These are PLACEHOLDER reviews for now.
-//
-// TO CONNECT REAL GOOGLE REVIEWS:
-//   1. Get a Google Places API key from Google Cloud Console
-//   2. Call the Places API: GET /maps/api/place/details/json
-//      with fields=reviews&place_id=YOUR_PLACE_ID&key=API_KEY
-//   3. Replace the `reviews` array below with the API response data
-//   4. Consider caching the API response in Supabase or Next.js
-//      ISR (revalidate: 3600) to avoid API rate limits
-// ─────────────────────────────────────────────────────────────
-
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Star } from "lucide-react";
 
-// Placeholder reviews — replace with real Google Places API data
-const reviews = [
+type Review = {
+  name: string;
+  rating: number;
+  text: string;
+  date: string;
+  photo?: string | null;
+};
+
+const placeholders: Review[] = [
   {
-    id: 1,
     name: "Amina M.",
     rating: 5,
     text: "Best coffee in Huye! The pour-over with Huye Mountain beans is absolutely incredible. The atmosphere is warm and the staff are so welcoming. My new favourite spot.",
     date: "2 weeks ago",
   },
   {
-    id: 2,
     name: "Jean-Pierre K.",
     rating: 5,
     text: "I travel a lot and Kawa House is easily one of the best specialty coffee shops I've visited in East Africa. The flat white is perfect — silky and balanced.",
     date: "1 month ago",
   },
   {
-    id: 3,
     name: "Sarah O.",
     rating: 5,
     text: "The Kawa Signature Latte with cinnamon and cardamom is divine. I come here every morning before work. Consistent quality, every single time.",
     date: "3 weeks ago",
   },
   {
-    id: 4,
     name: "David N.",
     rating: 4,
     text: "Beautiful space, great ambiance. The avocado toast and cold brew combo is my go-to. Love that they use 100% Rwandan beans — you can really taste the difference.",
     date: "1 month ago",
   },
   {
-    id: 5,
     name: "Claudine U.",
     rating: 5,
     text: "I brought my team here for a morning meeting and everyone loved it. The team is professional, the space is cozy, and the coffee is exceptional. Highly recommend!",
     date: "2 months ago",
   },
   {
-    id: 6,
     name: "Marco F.",
     rating: 5,
     text: "Visiting from Italy and I was impressed! That's saying something. The espresso is short, rich, and clean — no bitterness. Rwanda produces world-class coffee.",
@@ -63,11 +50,12 @@ const reviews = [
   },
 ];
 
-// Duplicate for seamless infinite loop
-const allReviews = [...reviews, ...reviews];
-
 export default function Reviews() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [reviews, setReviews] = useState<Review[]>(placeholders);
+  const [rating, setRating] = useState<number | null>(null);
+  const [total, setTotal] = useState(0);
+  const [isReal, setIsReal] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -80,11 +68,27 @@ export default function Reviews() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    fetch("/api/reviews")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.reviews && data.reviews.length > 0) {
+          setReviews(data.reviews);
+          setRating(data.rating);
+          setTotal(data.total);
+          setIsReal(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const displayReviews = [...reviews, ...reviews];
+  const avgRating = rating ?? 4.9;
+  const fullStars = Math.round(avgRating);
+
   return (
     <section className="bg-cream py-24 sm:py-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-
-        {/* ── Section header ────────────────────────────────── */}
         <div ref={sectionRef} className="reveal text-center mb-14">
           <p className="text-accent text-sm font-medium tracking-widest uppercase mb-4">
             What People Say
@@ -92,36 +96,35 @@ export default function Reviews() {
           <h2 className="text-4xl sm:text-5xl font-serif text-dark leading-tight mb-4">
             Customer Reviews
           </h2>
-          {/* Google star average — update these numbers when real reviews are connected */}
           <div className="flex items-center justify-center gap-2 text-dark/60 text-sm">
             <div className="flex gap-0.5">
               {[1, 2, 3, 4, 5].map((s) => (
-                <Star key={s} size={16} className="fill-accent text-accent" />
+                <Star
+                  key={s}
+                  size={16}
+                  className={s <= fullStars ? "fill-accent text-accent" : "fill-dark/20 text-dark/20"}
+                />
               ))}
             </div>
-            <span className="font-semibold text-dark">4.9</span>
-            <span>· Based on Google Reviews</span>
+            <span className="font-semibold text-dark">{avgRating.toFixed(1)}</span>
+            <span>
+              · {isReal && total > 0 ? `${total} Google Reviews` : "Based on Google Reviews"}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* ── Auto-scrolling carousel (no JS scroll — pure CSS animation) */}
       <div className="relative">
-        {/* Fade edges for a clean carousel look */}
         <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-cream to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-cream to-transparent z-10 pointer-events-none" />
-
-        {/* Scrolling track — animates with CSS keyframes defined in globals.css */}
         <div className="flex gap-6 animate-scroll reviews-track px-6">
-          {allReviews.map((review, i) => (
-            <ReviewCard key={`${review.id}-${i}`} review={review} />
+          {displayReviews.map((review, i) => (
+            <ReviewCard key={`${review.name}-${i}`} review={review} />
           ))}
         </div>
       </div>
 
-      {/* ── CTA to Google Maps reviews ────────────────────────── */}
       <div className="text-center mt-10">
-        {/* Replace # with your actual Google Maps reviews URL */}
         <a
           href="#"
           target="_blank"
@@ -141,36 +144,35 @@ export default function Reviews() {
   );
 }
 
-// ── Individual review card ───────────────────────────────────
-function ReviewCard({ review }: { review: (typeof reviews)[0] }) {
+function ReviewCard({ review }: { review: Review }) {
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-dark/5 w-80 shrink-0 flex flex-col gap-4">
-      {/* Stars */}
       <div className="flex gap-0.5">
         {[1, 2, 3, 4, 5].map((s) => (
           <Star
             key={s}
             size={14}
-            className={
-              s <= review.rating
-                ? "fill-accent text-accent"
-                : "text-dark/20"
-            }
+            className={s <= review.rating ? "fill-accent text-accent" : "text-dark/20"}
           />
         ))}
       </div>
-
-      {/* Review text */}
       <p className="text-dark/70 text-sm leading-relaxed flex-1">&ldquo;{review.text}&rdquo;</p>
-
-      {/* Footer: name + Google label */}
       <div className="flex items-center justify-between pt-2 border-t border-dark/5">
-        <div>
-          <p className="text-dark font-semibold text-sm">{review.name}</p>
-          <p className="text-dark/40 text-xs">{review.date}</p>
+        <div className="flex items-center gap-2">
+          {review.photo ? (
+            <img src={review.photo} alt={review.name} className="w-7 h-7 rounded-full object-cover" />
+          ) : (
+            <div className="w-7 h-7 rounded-full bg-accent/20 flex items-center justify-center text-accent text-xs font-bold">
+              {review.name[0]}
+            </div>
+          )}
+          <div>
+            <p className="text-dark font-semibold text-sm">{review.name}</p>
+            <p className="text-dark/40 text-xs">{review.date}</p>
+          </div>
         </div>
         <span className="text-xs text-dark/40 bg-dark/5 px-2 py-1 rounded-full">
-          Google Review
+          Google
         </span>
       </div>
     </div>
