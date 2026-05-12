@@ -9,6 +9,7 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Process from "@/components/Process";
 import Menu from "@/components/Menu";
+import Gallery from "@/components/Gallery";
 import Reviews from "@/components/Reviews";
 import Reservation from "@/components/Reservation";
 import Contact from "@/components/Contact";
@@ -38,6 +39,11 @@ export default function HomePage() {
         {/* Tabbed menu grid — data comes from data/menu.json */}
         <section id="menu">
           <Menu />
+        </section>
+
+        {/* Editorial photo gallery */}
+        <section id="gallery">
+          <Gallery />
         </section>
 
         {/* Horizontal scrolling Google Reviews carousel */}
