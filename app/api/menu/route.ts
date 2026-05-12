@@ -20,7 +20,7 @@ export async function GET() {
     return NextResponse.json({ menu: null });
   }
 
-  const range = "Sheet1!A2:G";
+  const range = "Menu!A5:G"; // tab is named "Menu"; headers are row 4, data starts row 5
   const url =
     `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}` +
     `?key=${apiKey}`;
