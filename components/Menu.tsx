@@ -55,7 +55,7 @@ const formatPrice = (price: number) => `RWF ${price.toLocaleString("en-RW")}`;
 
 export default function Menu() {
   const [sheetMenu, setSheetMenu] = useState<SheetMenu | null>(null);
-  const [isLive, setIsLive]       = useState(false);
+
   const [activeKey, setActiveKey] = useState<string>("Coffee");
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -76,7 +76,6 @@ export default function Menu() {
       .then((data) => {
         if (data.menu && Object.keys(data.menu).length > 0) {
           setSheetMenu(data.menu);
-          setIsLive(true);
           // Default to first category in sheet
           setActiveKey(Object.keys(data.menu)[0]);
         }
@@ -85,13 +84,13 @@ export default function Menu() {
   }, []);
 
   // Build the category list from live data or fallback to JSON
-  const categories = isLive && sheetMenu
+  const categories = sheetMenu
     ? Object.keys(sheetMenu).map((key) => ({ key, items: sheetMenu[key] }))
     : staticCategories;
 
   // Items for active tab
   const activeItems: MenuItem[] = (() => {
-    if (isLive && sheetMenu) return sheetMenu[activeKey] ?? [];
+    if (sheetMenu) return sheetMenu[activeKey] ?? [];
     const found = staticCategories.find((c) => c.key === activeKey);
     return (found?.items ?? []).map((item) => ({
       ...item,
@@ -104,21 +103,13 @@ export default function Menu() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
         {/* Section header */}
-        <div ref={sectionRef} className="reveal mb-16 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-          <div>
-            <p className="text-accent text-sm font-medium tracking-widest uppercase mb-4">
-              What We Serve
-            </p>
-            <h2 className="text-4xl sm:text-5xl font-serif text-white leading-tight">
-              Our Menu
-            </h2>
-          </div>
-          {isLive && (
-            <span className="inline-flex items-center gap-1.5 text-xs text-white/30 bg-white/[0.05] px-3 py-1.5 rounded-full self-start sm:self-auto">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              Live from Google Sheets
-            </span>
-          )}
+        <div ref={sectionRef} className="reveal mb-16">
+          <p className="text-accent text-sm font-medium tracking-widest uppercase mb-4">
+            What We Serve
+          </p>
+          <h2 className="text-4xl sm:text-5xl font-serif text-white leading-tight">
+            Our Menu
+          </h2>
         </div>
 
         <div className="flex flex-col md:flex-row gap-10 lg:gap-20">

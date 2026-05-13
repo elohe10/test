@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 // 5-minute ISR cache — sheet changes appear on site within 5 minutes
-export const revalidate = 300;
+export const revalidate = 86400; // 24-hour cache
 
 type SheetItem = {
   id: string;
@@ -27,7 +27,7 @@ export async function GET() {
 
   let res: Response;
   try {
-    res = await fetch(url, { next: { revalidate: 300 } });
+    res = await fetch(url, { next: { revalidate: 86400 } });
   } catch (err) {
     console.error("Sheets API fetch error:", err);
     return NextResponse.json({ menu: null });
