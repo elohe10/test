@@ -51,10 +51,11 @@ export default function HomePage() {
           <Reviews />
         </section>
 
-        {/* Reservation form → Supabase + WhatsApp notification */}
+        {/* Reservation section — temporarily hidden
         <section id="reserve">
           <Reservation />
         </section>
+        */}
 
         {/* Address, map, hours, contact links */}
         <section id="contact">

@@ -17,7 +17,7 @@ const navLinks = [
   { label: "Menu", href: "#menu" },
   { label: "About", href: "#about" },
   { label: "Reviews", href: "#reviews" },
-  { label: "Reserve a Table", href: "#reserve", highlight: true },
+  // { label: "Reserve a Table", href: "#reserve", highlight: true }, // temporarily hidden
 ];
 
 export default function Navbar() {
